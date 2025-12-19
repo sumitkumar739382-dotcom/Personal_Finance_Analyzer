@@ -1,6 +1,7 @@
 def m_ean(exp):
     n=len(exp)
-    if n==0 return 0
+    if n==0:
+        return 0
     mean=sum(exp)/n
     return mean 
 def dispersion(exp):
