@@ -40,7 +40,7 @@ def med(exp1):
     n=len(exp1)
     sorted_exp=s_ort(exp1)
     if n%2==0:
-        return ((sorted_exp[n//2-1])+(sorted_exp[n//2]))/2 #subtracted -1 from indices to fix index error
+        return ((sorted_exp[n//2-1])+(sorted_exp[n//2]))/2 
     else:
         return sorted_exp[n//2]  
 
@@ -48,8 +48,6 @@ def med(exp1):
 while(1):
     month=input("Enter name of month : ")
     year=int(input("Enter Year : "))
-    if month=='03' or year=='03': ###it's for testing only delete it ASAP
-        break
     months_31=('JANUARY','MARCH','MAY','JULY','AUGUST','OCTOBER','DECEMBER')
     months_30=('APRIL','JUNE','SEPTEMBER','NOVEMBER')
     expense={}
