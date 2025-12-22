@@ -1,4 +1,3 @@
-#import pandas as pd
 def m_ean(exp):
     n=len(exp)
     if n==0: 
@@ -8,7 +7,8 @@ def m_ean(exp):
     
 def dispersion(exp):#calculating Standard deviation 
     n=len(exp)
-    var=sum([(exp[i]-m_ean(exp))**2 for i in range(n)])/n
+    m=m_ean(exp)
+    var=sum([(exp[i]-m)**2 for i in range(n)])/n
     return var**(1/2)
 
 def m_ax(exp):
@@ -27,7 +27,7 @@ def m_in(exp):
             mi_n=exp[i]            
     return mi_n            
 def r_ange(exp):
-    return max(exp)-min(exp)
+    return m_ax(exp)-m_in(exp)
 
 def s_ort(exp1):#Implemented bubble sort (Ascending order)
     for i in range(len(exp1)):
@@ -62,11 +62,14 @@ while(1):
         if (year%400==0) or (year%4==0 and year%100!=0):
             days=29
             break
+        else:
+            days=28
+            break
     else:
         print("\nEnter valid month/year")
         continue
 for i in range(days):        
-    expense[i+1]=int(input(f"Expense of {i+1} {month} {year}"))  
+    expense[i]=int(input(f"Expense of {i+1} {month} {year}"))  
 #expense={1:20,2:30,3:40,4:50,5:60}
 
 exp=list(expense.values())   
@@ -82,16 +85,16 @@ report = (
         f"\n================ Monthly Expense Report ================\n"
         f"Month / Year        : {month} / {year}\n"
         f"--------------------------------------------------------\n"
-        f"Total Expense       : {total}\n"
-        f"Average Expense     : {mean} per day\n"
-        f"Median Expense      : {median}\n"
-        f"Standard Deviation  : {sd}\n"
-        f"Minimum Expense     : {min_exp}\n"
-        f"Maximum Expense     : {max_exp}\n"
+        f"Total Expense       : {sum(exp)}\n"
+        f"Average Expense     : {MEAN} per day\n"
+        f"Median Expense      : {MEDIAN}\n"
+        f"Standard Deviation  : {SD}\n"
+        f"Minimum Expense     : {m_in(exp)}\n"
+        f"Maximum Expense     : {m_ax(exp)}\n"
         f"--------------------------------------------------------\n"
         f"Interpretation:\n"
-        f"- 50% of daily expenses are ≤ {median}\n"
-        f"- Expenses varied between {min_exp} and {max_exp}\n"
+        f"- 50% of daily expenses are ≤ {MEDIAN}\n"
+        f"- Expenses varied between {m_in(exp)} and {m_ax(exp)}\n"
         f"========================================================\n"
     )
 print(report)
