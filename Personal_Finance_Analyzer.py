@@ -1,16 +1,15 @@
-#22/12/25
-def m_ean(exp):      #        sum of expenses
-    n=len(exp)       #MEAN = ----------------
-    if n==0:         #            N  
+def Mean(A):       #        sum of values in A
+    n=len(A)       #MEAN = -------------------
+    if n==0:       #             N  
         return 0
-    return sum(exp)/n
+    return sum(A)/n
          
-def dispersion(exp):#calculating Standard deviation 
-    n=len(exp)                                      #           sum of (Xi-MEAN)^2
-    var=sum([(exp[i]-MEAN)**2 for i in range(n)])/n #VARIANCE = -------------------  SD = (VARIANCE)^(1/2)
-    return var**(1/2)                               #                  N      
+def dispersion(A,m):#calculating Standard deviation 
+    n=len(A)                                   #           sum of (Xi-MEAN)^2
+    var=sum([(A[i]-m)**2 for i in range(n)])/n #VARIANCE = -------------------  SD = (VARIANCE)^(1/2)
+    return var**(1/2)                          #                  N      
 
-def m_ax(exp):
+def Max(exp):
     n=len(exp)
     ma_x=exp[0]
     for i in range(n):
@@ -18,35 +17,44 @@ def m_ax(exp):
             ma_x=exp[i]
     return ma_x       
 
-def m_in(exp):
+def Min(exp):
     n=len(exp)
     mi_n=exp[0]
     for i in range(n):
         if exp[i]<=mi_n:
             mi_n=exp[i]            
     return mi_n 
-    
-def r_ange(exp):
-    return m_ax(exp)-m_in(exp)
 
-def s_ort(exp1):                          #Implemented bubble sort (Ascending order)
-    for i in range(len(exp1)):
-        for j in range(i+1,len(exp1)):
-            if exp1[i]>exp1[j]:
-                exp1[j],exp1[i]=exp1[i],exp1[j]
-    return exp1
+def Sort(A):                          #Implemented SELECTION sort (Ascending order)
+    for i in range(len(A)):
+        for j in range(i+1,len(A)):
+            if A[i]>A[j]:
+                A[j],A[i]=A[i],A[j]
+    return A
     
-def med(exp1):
-    n=len(exp1)                  #          (N/2+1)th value + (N/2)th value
-    sorted_exp=s_ort(exp1)       # MEDIAN = ---------------------------------------------  if N is ODD
-    if n%2==0:                   #                       2
+def med(A):
+    n=len(A)                        #          (N/2+1)th value + (N/2)th value
+    sorted_exp=Sort(A.copy())       # MEDIAN = --------------------------------  if N is ODD
+    if n%2==0:                      #                       2
         return ((sorted_exp[n//2-1])+(sorted_exp[n//2]))/2      #           N
     else:                                                       # MEDIAN= -----th value if N is SVEN
         return sorted_exp[n//2]                                 #            2
 
+def rxy(exp,wh,MEAN_X,MEAN_Y,SD_X,SD_Y):
+    if len(exp)!=len(wh):
+        return
+    elif SD_X == 0 or SD_Y == 0:
+        return 0
+    n=len(exp)    
+    dev_x=[(x-MEAN_X) for x in exp]
+    dev_y=[(y-MEAN_Y) for y in wh]
+    sum_devx=0
+    for i in range (n):
+        sum_devx+=(dev_x[i]*dev_y[i])
+    Covarience=sum_devx/n  
+    return Covarience/(SD_X*SD_Y)    
 #input function here 
 while(1):
-    print("Enter 13 in month to terminate")
     month=input("Enter name of month : ")
     if month=='13':
         break
@@ -54,6 +62,7 @@ while(1):
     months_31=('JANUARY','MARCH','MAY','JULY','AUGUST','OCTOBER','DECEMBER')
     months_30=('APRIL','JUNE','SEPTEMBER','NOVEMBER')
     expense={}
+    work_hr={}
     days=0
     
     if month.upper() in months_31:
@@ -78,36 +87,46 @@ while(1):
 
 for i in range(days):        
     expense[i]=float(input(f"Expense of {i+1} {month} {year} : "))
-    
+    work_hr[i]=float(input(f"working hour on {i+1} {month} {year} : "))    
+
 exp=list(expense.values())
-exp1=exp.copy()
 
+wh=list(work_hr.values())
 #storing all constant-calculated values in global variables to use them multiple times
-MEAN = round(m_ean(exp),2)
+MEAN_X= Mean(exp)
+MEAN_Y= Mean(wh)
 
-SD=round(dispersion(exp),2)
+SD_X=dispersion(exp,MEAN_X)
+SD_Y=dispersion(wh,MEAN_Y)
+mi_n=Min(exp)
 
-mi_n=m_in(exp)
+ma_x=Max(exp)
 
-ma_x=m_ax(exp)
+MEDIAN_X=med(exp)
+MEDIAN_Y=med(wh)
 
-MEDIAN=med(exp)
-
-RANGE=r_ange(exp)
+R=rxy(exp,wh,MEAN_X,MEAN_Y,SD_X,SD_Y)
+print("\n",MEAN_X,"\n",MEAN_Y,"\n",SD_X,"\n",SD_Y)
 report = (
-        f"\n================ Monthly Expense Report ================\n"
+        f"\n============= Monthly Work-Expense Report ==============\n"
         f"Month / Year        : {month} / {year}\n"
         f"--------------------------------------------------------\n"
-        f"Total Expense       : {sum(exp)}\n"
-        f"Average Expense     : {MEAN} per day\n"
-        f"Median Expense      : {MEDIAN}\n"
-        f"Standard Deviation  : {SD}\n"
-        f"Minimum Expense     : {mi_n}\n"
-        f"Maximum Expense     : {ma_x}\n"
+        f"Total Expense           : {sum(exp)} Rs\n"
+        f"Total Work hour         : {sum(wh)} hour\n" 
+        f"Average Expense         : {MEAN_X} Rs per day\n"
+        f"Average work hour       : {MEAN_Y} hour per day\n"
+        f"Median Expense          : {MEDIAN_X} Rs\n"
+        f"Median work hour        : {MEDIAN_Y} hour\n"
+        f"Standard Deviation(exp) : {SD_X}\n"
+        f"Minimum Expense         : {mi_n} Rs\n"
+        f"Maximum Expense         : {ma_x} Rs\n"
+        f"Correl. Coeff.(rxy)     : {R}\n"
         f"--------------------------------------------------------\n"
         f"Interpretation:\n"
-        f"- 50% of daily expenses are ≤ {MEDIAN}\n"
-        f"- Expenses varied between {mi_n} and {ma_x}\n"
+        f"- 50% of daily expenses are ≤ {MEDIAN_X} Rs\n"
+        f"- You have worked ≤ {MEDIAN_Y} hours in 50% of month.\n"
+        f"- Expenses varied between {mi_n} Rs and {ma_x} Rs\n"
+        f"- Expenses are {"highly" if abs(R)>=0.5 else "not"} dependent on work hours\n"
         f"========================================================\n"
     )
 print(report)
