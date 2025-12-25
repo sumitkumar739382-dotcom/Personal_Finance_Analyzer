@@ -1,16 +1,19 @@
+import sys
 def Mean(A):       #        sum of values in A
     n=len(A)       #MEAN = -------------------
     if n==0:       #             N  
         return 0
     return sum(A)/n
          
-def dispersion(A,m):#calculating Standard deviation 
+def dispersion(A,m):                           #calculating Standard deviation 
     n=len(A)                                   #           sum of (Xi-MEAN)^2
     var=sum([(A[i]-m)**2 for i in range(n)])/n #VARIANCE = -------------------  SD = (VARIANCE)^(1/2)
     return var**(1/2)                          #                  N      
 
 def Max(exp):
     n=len(exp)
+    if n==0:
+        return 0
     ma_x=exp[0]
     for i in range(n):
         if ma_x<=exp[i]:
@@ -19,13 +22,15 @@ def Max(exp):
 
 def Min(exp):
     n=len(exp)
+    if n==0:
+        return 0 
     mi_n=exp[0]
     for i in range(n):
         if exp[i]<=mi_n:
             mi_n=exp[i]            
     return mi_n 
 
-def Sort(A):                          #Implemented SELECTION sort (Ascending order)
+def Sort(A):                        #Implemented SELECTION sort (Ascending order)
     for i in range(len(A)):
         for j in range(i+1,len(A)):
             if A[i]>A[j]:
@@ -33,7 +38,9 @@ def Sort(A):                          #Implemented SELECTION sort (Ascending ord
     return A
     
 def med(A):
-    n=len(A)                        #          (N/2+1)th value + (N/2)th value
+    n=len(A)
+    if n==0:
+        return 0                    #          (N/2+1)th value + (N/2)th value
     sorted_exp=Sort(A.copy())       # MEDIAN = --------------------------------  if N is ODD
     if n%2==0:                      #                       2
         return ((sorted_exp[n//2-1])+(sorted_exp[n//2]))/2      #           N
@@ -42,7 +49,7 @@ def med(A):
 
 def rxy(exp,wh,MEAN_X,MEAN_Y,SD_X,SD_Y):
     if len(exp)!=len(wh):
-        return
+        return 0
     elif SD_X == 0 or SD_Y == 0:
         return 0
     n=len(exp)    
@@ -51,18 +58,17 @@ def rxy(exp,wh,MEAN_X,MEAN_Y,SD_X,SD_Y):
     sum_devx=0
     for i in range (n):
         sum_devx+=(dev_x[i]*dev_y[i])
-    Covarience=sum_devx/n  
-    return Covarience/(SD_X*SD_Y)    
+    Covariance=sum_devx/n  
+    return Covariance/(SD_X*SD_Y)    
 #input function here 
 while(1):
     month=input("Enter name of month : ")
     if month=='13':
-        break
+        sys.exit()
     year=int(input("Enter Year : "))
     months_31=('JANUARY','MARCH','MAY','JULY','AUGUST','OCTOBER','DECEMBER')
     months_30=('APRIL','JUNE','SEPTEMBER','NOVEMBER')
     expense={}
-    work_hr={}
     days=0
     
     if month.upper() in months_31:
@@ -84,14 +90,21 @@ while(1):
     else:
         print("\nEnter valid month/year")
         continue
+#------------DATA COLLECTION-------------#
+for i in range(days):  
+    expense[i]=[]
+    raw_e=input(f"Expense on  {i+1} {month} {year} : ")
+    raw_w=input(f"working hour on {i+1} {month} {year} : ")
+    e=float(raw_e) if raw_e!="" else 0.0
+    w=float(raw_w) if raw_w!="" else 0.0
+    
+    expense[i].append(e)
+    expense[i].append(w)
+#------------DATA EXTRACTION-------------#
+exp=list(expense[i][0] for i in range(days))
+wh=list(expense[i][1] for i in range(days))
 
-for i in range(days):        
-    expense[i]=float(input(f"Expense of {i+1} {month} {year} : "))
-    work_hr[i]=float(input(f"working hour on {i+1} {month} {year} : "))    
-
-exp=list(expense.values())
-
-wh=list(work_hr.values())
+#------CALCULATION---------#
 #storing all constant-calculated values in global variables to use them multiple times
 MEAN_X= Mean(exp)
 MEAN_Y= Mean(wh)
@@ -106,7 +119,12 @@ MEDIAN_X=med(exp)
 MEDIAN_Y=med(wh)
 
 R=rxy(exp,wh,MEAN_X,MEAN_Y,SD_X,SD_Y)
-print("\n",MEAN_X,"\n",MEAN_Y,"\n",SD_X,"\n",SD_Y)
+relation = (
+    "strongly positively" if R >= 0.5 else
+    "strongly negatively" if R <= -0.5 else
+    "weakly"
+)
+
 report = (
         f"\n============= Monthly Work-Expense Report ==============\n"
         f"Month / Year        : {month} / {year}\n"
@@ -126,7 +144,7 @@ report = (
         f"- 50% of daily expenses are ≤ {MEDIAN_X} Rs\n"
         f"- You have worked ≤ {MEDIAN_Y} hours in 50% of month.\n"
         f"- Expenses varied between {mi_n} Rs and {ma_x} Rs\n"
-        f"- Expenses are {"highly" if abs(R)>=0.5 else "not"} dependent on work hours\n"
+        f"- Expenses are {relation} dependent on work hours\n"
         f"========================================================\n"
     )
 print(report)
