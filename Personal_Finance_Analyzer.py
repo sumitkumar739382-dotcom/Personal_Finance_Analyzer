@@ -53,13 +53,22 @@ def rxy(exp,wh,MEAN_X,MEAN_Y,SD_X,SD_Y):
     elif SD_X == 0 or SD_Y == 0:
         return 0
     n=len(exp)    
-    dev_x=[(x-MEAN_X) for x in exp]
+    dev_x=[(x-MEAN_X) for x in exp] 
     dev_y=[(y-MEAN_Y) for y in wh]
     sum_devx=0
     for i in range (n):
         sum_devx+=(dev_x[i]*dev_y[i])
     Covariance=sum_devx/n  
     return Covariance/(SD_X*SD_Y)    
+
+def c_moment(exp,MEAN_X):
+    central={}
+    n=len(exp)
+    for i in range(5):                                     #         SUM( (Xi-MEAN)^R )
+        central[i]=sum([(x-MEAN_X)**i for x in exp])/n     #Mu_R  = ----------------------
+    return central                                         #                 N
+
+    
 #input function here 
 while(1):
     month=input("Enter name of month : ")
@@ -117,14 +126,13 @@ ma_x=Max(exp)
 
 MEDIAN_X=med(exp)
 MEDIAN_Y=med(wh)
-
+MOMENT_C=c_moment(exp,MEAN_X)
 R=rxy(exp,wh,MEAN_X,MEAN_Y,SD_X,SD_Y)
 relation = (
     "strongly positively" if R >= 0.5 else
     "strongly negatively" if R <= -0.5 else
     "weakly"
 )
-
 report = (
         f"\n============= Monthly Work-Expense Report ==============\n"
         f"Month / Year        : {month} / {year}\n"
@@ -139,12 +147,15 @@ report = (
         f"Minimum Expense         : {mi_n} Rs\n"
         f"Maximum Expense         : {ma_x} Rs\n"
         f"Correl. Coeff.(rxy)     : {R}\n"
+        f"Skewness(beta1)         : {(MOMENT_C[3]**2)/(MOMENT_C[2]**3)}\n"
+        f"Kurtosis(gamma2)        : {(MOMENT_C[4])/(MOMENT_C[2]**2)-3}\n"
         f"--------------------------------------------------------\n"
         f"Interpretation:\n"
         f"- 50% of daily expenses are ≤ {MEDIAN_X} Rs\n"
         f"- You have worked ≤ {MEDIAN_Y} hours in 50% of month.\n"
         f"- Expenses varied between {mi_n} Rs and {ma_x} Rs\n"
         f"- Expenses are {relation} dependent on work hours\n"
+        f"- "
         f"========================================================\n"
     )
 print(report)
