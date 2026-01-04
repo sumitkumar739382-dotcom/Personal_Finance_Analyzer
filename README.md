@@ -41,6 +41,7 @@ The main objective is to understand **how statistical theory is translated into 
 * Variance (population-based)
 * Standard Deviation
 * Minimum and Maximum values
+* Measures of skewness and kurtosis
 
 ### Bivariate Data Analysis
 
@@ -72,6 +73,7 @@ All computations are performed using **explicit mathematical formulas**, impleme
 * Standard Deviation (population)
 * Minimum & Maximum
 * Pearson Correlation Coefficient
+* Measures of skewness and kurtosis
 
 The program generates a **monthly analytical report** summarizing expense behavior and its relationship with work hours.
 
@@ -102,7 +104,6 @@ python finance_analyzer.py
 
 As learning progresses, this project may be extended to include:
 
-* Measures of skewness and kurtosis
 * Simple linear regression and prediction
 
 ---
